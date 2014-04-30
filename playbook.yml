@@ -1,0 +1,20 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: Update packages
+      apt: update_cache=yes
+
+    - name: Upgrade
+      apt: upgrade=safe
+
+    - name: Install packages
+      apt: pkg={{item}} state=present
+      with_items:
+        - docker.io
+
+    - name: Add vagrant user to docker group
+      user: name=vagrant group=docker append=yes
+
+    - name: Add Docker alias
+      file: src=/usr/bin/docker.io dest=/usr/bin/docker state=link
