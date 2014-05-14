@@ -9,7 +9,7 @@
       apt: upgrade=safe
 
     - name: Install packages
-      apt: pkg={{item}} state=present
+      apt: pkg={{item}} state=latest
       with_items:
         - docker.io
 
