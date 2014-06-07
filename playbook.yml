@@ -1,7 +1,16 @@
 ---
 - hosts: all
   sudo: yes
+  vars:
+      keyserver: hkp://keyserver.ubuntu.com:80
+      keys: 36A1D7869245C8950F966E92D8576A8BA88D21E9
   tasks:
+    - name: Add repository key
+      shell: apt-key adv --keyserver {{keyserver}} --recv-keys {{keys}}
+
+    - name: Setup repository
+      apt_repository: repo='deb https://get.docker.io/ubuntu docker main' state=present
+
     - name: Update packages
       apt: update_cache=yes
 
@@ -11,10 +20,7 @@
     - name: Install packages
       apt: pkg={{item}} state=latest
       with_items:
-        - docker.io
+        - lxc-docker
 
     - name: Add vagrant user to docker group
       user: name=vagrant group=docker append=yes
-
-    - name: Add Docker alias
-      file: src=/usr/bin/docker.io dest=/usr/bin/docker state=link
